@@ -1,5 +1,8 @@
 {
   "dependencies": [
-    "openssl"
+    "openssl",
+    "arrow",
+    "httplib",
+    "nlohmann-json"
   ]
 }

@@ -1,0 +1,39 @@
+# name: test/sql/odps.test
+# description: test odps extension
+# group: [odps]
+
+# 连接
+query I
+SELECT odps_connect('test_access_id', 'test_access_key', 'test_project', 'http://test.endpoint.com', 'http://test.tunnel.endpoint.com');
+----
+true
+
+# Test table function with parameters (should use global credentials)
+statement error
+SELECT * FROM odps_scan(table => 'test_table');
+----
+Failed to initialize ODPS reader
+
+# Test Storage API specific table function
+statement error
+SELECT * FROM odps_storage_scan(table => 'test_table');
+----
+Failed to initialize ODPS reader
+
+# Test Tunnel API specific table function
+statement error
+SELECT * FROM odps_tunnel_scan(table => 'test_table', tunnel_endpoint => 'http://test.tunnel.endpoint.com');
+----
+Failed to initialize ODPS reader
+
+# Test SQL query table function
+statement error
+SELECT * FROM odps_sql_query(sql => 'SELECT * FROM test_table LIMIT 10');
+----
+Failed to execute SQL
+
+# 断开连接
+query I
+SELECT odps_disconnect();
+----
+true 
