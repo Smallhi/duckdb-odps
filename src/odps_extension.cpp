@@ -10,6 +10,7 @@
 #include "duckdb/main/extension_util.hpp"
 #include "duckdb/parser/parsed_data/create_scalar_function_info.hpp"
 #include "duckdb/parser/parsed_data/create_table_function_info.hpp"
+#include "duckdb/main/extension/extension_loader.hpp"
 
 namespace duckdb {
 
@@ -111,15 +112,15 @@ static void LoadInternal(DatabaseInstance &instance) {
     ExtensionUtil::RegisterFunction(instance, odps_cancel_instance_function);
 }
 
-void ODPSExtension::Load(DuckDB &db) {
-    LoadInternal(*db.instance);
+void OdpsExtension::Load(ExtensionLoader &loader) {
+    LoadInternal(loader.GetDatabaseInstance());
 }
 
-std::string ODPSExtension::Name() {
+std::string OdpsExtension::Name() {
     return "odps";
 }
 
-std::string ODPSExtension::Version() const {
+std::string OdpsExtension::Version() const {
 #ifdef EXT_VERSION_ODPS
     return EXT_VERSION_ODPS;
 #else
@@ -133,7 +134,7 @@ extern "C" {
 
 DUCKDB_EXTENSION_API void odps_init(duckdb::DatabaseInstance &db) {
     duckdb::DuckDB db_wrapper(db);
-    db_wrapper.LoadExtension<duckdb::ODPSExtension>();
+    db_wrapper.LoadExtension<duckdb::OdpsExtension>();
 }
 
 DUCKDB_EXTENSION_API const char *odps_version() {

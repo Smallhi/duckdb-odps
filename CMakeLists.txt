@@ -32,7 +32,11 @@ target_link_libraries(${LOADABLE_EXTENSION_NAME} OpenSSL::SSL OpenSSL::Crypto)
 
 # Add Arrow support if available
 find_package(Arrow QUIET)
-if(Arrow_FOUND)
+if(Arrow_FOUND AND TARGET arrow::arrow_shared)
+    target_link_libraries(${EXTENSION_NAME} arrow::arrow_shared)
+    target_link_libraries(${LOADABLE_EXTENSION_NAME} arrow::arrow_shared)
+    message(STATUS "Arrow found, building with Arrow support")
+elseif(Arrow_FOUND AND TARGET Arrow::Arrow)
     target_link_libraries(${EXTENSION_NAME} Arrow::Arrow)
     target_link_libraries(${LOADABLE_EXTENSION_NAME} Arrow::Arrow)
     message(STATUS "Arrow found, building with Arrow support")
